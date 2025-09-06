@@ -1,18 +1,16 @@
 #include <iostream>
 using namespace std;
-
+using ll = long long;
 int main() {
-    int t;
-    cin >> t;
+    int t; cin >> t;
     while (t--) {
-        int r, b, d;
+        ll r, b, d;
         cin >> r >> b >> d;
-        int max_color = max(r, b);
-        int min_color = min(r, b);
-        if (max_color <= min_color * (d + 1))
-            cout << "YES\n";
-        else
-            cout << "NO\n";
+        ll differ = abs(r-b);
+        ll mini = min(r,b);
+        ll each = ( differ + mini - 1) / mini ;
+        if(each <= d) cout << "YES" << endl;
+        else cout << "NO" << endl ;
     }
     return 0;
 }
