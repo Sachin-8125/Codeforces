@@ -1,79 +1,56 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const double eps = 1e-5;
-
-struct Point {
-    double x, y;
-    double r;
+struct Circle {
+    double x, y, r;
 };
 
-Point p[3];
-
-double dist(double x, double y, const Point& tp) {
-    return sqrt((x - tp.x) * (x - tp.x) + (y - tp.y) * (y - tp.y));
+double angle(double px, double py, const Circle& c) {
+    double d = hypot(px - c.x, py - c.y);
+    return 2.0 * atan2(c.r, d);
 }
 
-double cost(double x, double y) {
-    array<double, 3> ang;
-    
-    for(int i = 0; i < 3; ++i) {
-        ang[i] = dist(x, y, p[i]) / p[i].r; // sin
-    }
-    
-    array<double, 3> d;
-    for(int i = 0; i < 3; ++i) {
-        d[i] = ang[i] - ang[(i + 1) % 3]; // the difference between the angles of view
-    }
-    
-    double ans = 0.0;
-    for(int i = 0; i < 3; ++i) {
-        ans += d[i] * d[i]; // similar variance
-    }
-    return ans;
+double common_angle(double px, double py, const vector<Circle>& circles) {
+    double a1 = angle(px, py, circles[0]);
+    double a2 = angle(px, py, circles[1]);
+    double a3 = angle(px, py, circles[2]);
+    if (abs(a1 - a2) < 1e-7 && abs(a2 - a3) < 1e-7)
+        return a1;
+    return -1.0;
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
-    for(int i = 0; i < 3; i++) {
-        cin >> p[i].x >> p[i].y >> p[i].r;
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    vector<Circle> c(3);
+    for (int i = 0; i < 3; ++i) {
+        int x, y, r;
+        cin >> x >> y >> r;
+        c[i] = {double(x), double(y), double(r)};
     }
-    
-    double x = 0.0, y = 0.0;
-    for(int i = 0; i < 3; ++i) {
-        x += p[i].x / 3;
-        y += p[i].y / 3; // Search in the center of gravity attachment
-    }
-    
-    double t = 1.0;
-    while(t > eps) {
-        bool improved = false;
-        double current_cost = cost(x, y);
-        
-        if(cost(x + t, y) < current_cost) {
-            x += t;
-            improved = true;
-        } else if(cost(x - t, y) < current_cost) {
-            x -= t;
-            improved = true;
-        } else if(cost(x, y - t) < current_cost) {
-            y -= t;
-            improved = true;
-        } else if(cost(x, y + t) < current_cost) {
-            y += t;
-            improved = true;
-        }
-        
-        if(!improved) { // No better solutions around
-            t /= 2;
+
+    // Use grid search + local optimization
+    double best_x = 0, best_y = 0, max_angle = 0;
+
+    for (double x = -1000; x <= 1000; x += 5) {
+        for (double y = -1000; y <= 1000; y += 5) {
+            double a1 = angle(x, y, c[0]);
+            double a2 = angle(x, y, c[1]);
+            double a3 = angle(x, y, c[2]);
+            if (abs(a1 - a2) < 1e-5 && abs(a2 - a3) < 1e-5) {
+                if (a1 > max_angle) {
+                    max_angle = a1;
+                    best_x = x;
+                    best_y = y;
+                }
+            }
         }
     }
-    
-    if(fabs(cost(x, y)) < eps) {
-        cout << fixed << setprecision(6) << x << " " << y << "\n";
+
+    if (max_angle > 0) {
+        cout << fixed << setprecision(5) << best_x << " " << best_y << endl;
     }
-    
+
     return 0;
 }
