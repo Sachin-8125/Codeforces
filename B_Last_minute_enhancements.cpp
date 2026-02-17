@@ -1,38 +1,24 @@
 #include <bits/stdc++.h>
 using namespace std;
-
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
     int t;
     cin >> t;
-    while(t--){
+    while (t--) {
         int n;
         cin >> n;
-        vector<int> a(n);
-        for(int i = 0; i < n; i++){
-            cin >> a[i];
-        }
-
-        sort(a.begin(), a.end());
-        int last = 0, ans = 0;
-
-        for(int x : a){
-            // if we can put x+1 and remain strictly greater than last
-            if(x + 1 > last){
-                last = x + 1;
-                ans++;
-            }
-            // else if we can put x itself while still strictly > last
-            else if(x > last){
-                last = x;
-                ans++;
+        vector<int> x(n);
+        for (int i = 0; i < n; i++) cin >> x[i];
+        set<int> used;
+        for (int i = 0; i < n; i++) {
+            if (used.find(x[i]) == used.end()) {
+                used.insert(x[i]);
+            } else if (used.find(x[i] + 1) == used.end()) {
+                used.insert(x[i] + 1);
             }
         }
-
-        cout << ans << "\n";
+        cout << used.size() << "\n";
     }
-
     return 0;
 }
