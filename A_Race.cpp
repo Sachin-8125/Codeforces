@@ -1,26 +1,28 @@
-#include <bits/stdc++.h>
+#include <iostream>
+
 using namespace std;
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+void solve() {
+    int a, x, y;
+    cin >> a >> x >> y;
 
+    if ((x > a && y > a) || (x < a && y < a)) {
+        cout << "YES\n";
+    } else {
+        cout << "NO\n";
+    }
+}
+
+int main() {
+    // Fast I/O
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
     int t;
     cin >> t;
     while (t--) {
-        int a, x, y;
-        cin >> a >> x >> y;
-
-        int da = abs(x - a);
-        int db = abs(y - a);
-
-        bool sameSide = ( (x - a) * (y - a) > 0 );
-
-        if (sameSide && min(da, db) > 1) {
-            cout << "YES\n";
-        } else {
-            cout << "NO\n";
-        }
+        solve();
     }
+    
     return 0;
 }
